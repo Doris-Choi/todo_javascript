@@ -4,21 +4,30 @@
     <title>To Do</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-    <script src="./js/index.js" async></script>
   </head>
   <body>
     <div id="app">
-      <section class="todo">
-        <h2>Date List</h2>
-        <input
-          type="text"
-          class="date-input"
-          placeholder="날짜를 입력해주세요"
-        />
-        <div class="date-list"></div>
-        <section class="task-list"></section>
-      </section>
+      <h1>To Doris Calendar</h1>
+      <div class="wrapper">
+        <div class="header">
+          <div class="prev-month">prev-arrow</div>
+          <div class="month-year"></div>
+          <div class="next-month">next-arrow</div>
+        </div>
+        <div class="calendar-wrapper">
+          <div class="weeks">
+            <div class="week">SUN</div>
+            <div class="week">MON</div>
+            <div class="week">TUE</div>
+            <div class="week">WED</div>
+            <div class="week">THU</div>
+            <div class="week">FRI</div>
+            <div class="week">SAT</div>
+          </div>
+          <div class="days"></div>
+        </div>
+      </div>
     </div>
+    <script src="js/calendar.js" async></script>
   </body>
 </html>
