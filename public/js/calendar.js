@@ -28,16 +28,18 @@ function renderCalendar(point) {
     for (let j = 0; j < 7; j++) {
       const day = document.createElement('div');
       day.innerText = thisDate.getDate();
-      day.setAttribute(
-        'class',
-        `day ${thisDate < startMonth ? 'prev' : ''} ${
-          thisDate > endMonth ? 'next' : ''
-        } ${
-          thisDate.toDateString() === new Date().toDateString() ? 'today' : ''
-        } ${thisDate.getDay() === 0 ? 'sun' : ''} ${
-          thisDate.getDay() === 6 ? 'sat' : ''
-        }`,
+      day.classList.add('day');
+      day.classList.toggle(
+        'other',
+        thisDate < startMonth || thisDate > endMonth,
       );
+      day.classList.toggle(
+        'today',
+        thisDate.toDateString() === new Date().toDateString(),
+      );
+      day.classList.toggle('sun', thisDate.getDay() === 0);
+      day.classList.toggle('sat', thisDate.getDay() === 6);
+
       weekBox.appendChild(day);
 
       thisDate.setDate(thisDate.getDate() + 1);
@@ -48,6 +50,10 @@ function renderCalendar(point) {
   return days;
 }
 
-const days = document.querySelector('.days');
-console.log(days);
-days.appendChild(renderCalendar(new Date()));
+window.onload = () => {
+  const days = document.querySelector('.days');
+  days.appendChild(renderCalendar(new Date()));
+};
+
+function prevMonth() {}
+function nextMonth() {}
