@@ -1,86 +1,94 @@
-let point = new Date();
+const calendar = (function func() {
+  const pointDate = new Date();
 
-const prev = document.querySelector('.prev-month');
-const next = document.querySelector('.next-month');
-prev.addEventListener('click', prevMonth);
-next.addEventListener('click', nextMonth);
-
-function renderCalendar(point) {
-  // 달력의 월/년이 지정일에 따라 설정되도록
+  // 엘리먼트 변수 접근
+  const prev = document.querySelector('.prev-month');
+  const next = document.querySelector('.next-month');
   const monthYear = document.querySelector('.month-year');
-  monthYear.innerText = `${point
-    .toString()
-    .substr(4, 3)
-    .toUpperCase()} ${point.getFullYear()}`;
+  const days = document.querySelector('.days');
 
-  // 달력에 필요한 변수 선언
-  const startMonth = new Date(point.getFullYear(), point.getMonth());
-  const endMonth = new Date(point.getFullYear(), point.getMonth() + 1);
-  endMonth.setDate(endMonth.getDate() - 1);
-  const startDate = new Date(
-    startMonth.valueOf() - 1000 * 60 * 60 * 24 * startMonth.getDay(),
-  );
-  const endDate = new Date(
-    endMonth.valueOf() + 1000 * 60 * 60 * 24 * (6 - endMonth.getDay()),
-  );
+  window.onload = () => {
+    renderCalendar(pointDate);
+  };
 
-  // 달력 구조
-  const days = document.createElement('div');
-  days.classList.add('cal-wrapper');
-  const thisDate = new Date(startDate);
-  for (let i = 0; i < (endDate - startDate) / 24 / 60 / 60 / 1000 / 7; i++) {
-    const weekBox = document.createElement('div');
-    weekBox.setAttribute('class', 'week-box');
+  // 지정 날짜 변경 함수
+  function chagneDate() {}
 
-    for (let j = 0; j < 7; j++) {
-      const day = document.createElement('div');
-      day.innerText = thisDate.getDate();
-      day.classList.add('day');
-      day.classList.toggle(
-        'other',
-        thisDate < startMonth || thisDate > endMonth,
-      );
-      day.classList.toggle(
-        'today',
-        thisDate.toDateString() === new Date().toDateString(),
-      );
-      day.classList.toggle('sun', thisDate.getDay() === 0);
-      day.classList.toggle('sat', thisDate.getDay() === 6);
+  // 달력 렌더링 함수
+  function renderCalendar(pointDate) {
+    // days 내용 초기화
+    days.innerHTML = '';
 
-      // date 정보를 남기기 위해
-      const dateInfo = document.createElement('div');
-      dateInfo.classList.add('date-info');
-      dateInfo.innerText = thisDate.toDateString();
-      dateInfo.style.cssText = 'text-indent:-9999px';
-      day.appendChild(dateInfo);
+    // 달력의 월/년이 지정일에 따라 설정되도록
+    monthYear.innerText = `${pointDate
+      .toString()
+      .substr(4, 3)
+      .toUpperCase()} ${pointDate.getFullYear()}`;
 
-      weekBox.appendChild(day);
-      thisDate.setDate(thisDate.getDate() + 1);
+    // 달력에 필요한 변수 선언
+    const startMonth = new Date(pointDate.getFullYear(), pointDate.getMonth());
+    const endMonth = new Date(
+      pointDate.getFullYear(),
+      pointDate.getMonth() + 1,
+    );
+    endMonth.setDate(endMonth.getDate() - 1);
+    const startDate = new Date(
+      startMonth.valueOf() - 1000 * 60 * 60 * 24 * startMonth.getDay(),
+    );
+    const endDate = new Date(
+      endMonth.valueOf() + 1000 * 60 * 60 * 24 * (6 - endMonth.getDay()),
+    );
+
+    // 달력 구조
+    const dayWrap = document.createElement('div');
+    dayWrap.classList.add('cal-wrapper');
+
+    const thisDate = new Date(startDate);
+    for (let i = 0; i < (endDate - startDate) / 24 / 60 / 60 / 1000 / 7; i++) {
+      const weekBox = document.createElement('div');
+      weekBox.classList.add('week-box');
+
+      for (let j = 0; j < 7; j++) {
+        const day = document.createElement('div');
+        day.innerText = thisDate.getDate();
+        day.classList.add(
+          'day',
+          `${thisDate < startMonth || thisDate > endMonth ? 'other' : 'curr'}`,
+        );
+        day.classList.toggle(
+          'today',
+          thisDate.toDateString() === new Date().toDateString(),
+        );
+        day.classList.toggle('sun', thisDate.getDay() === 0);
+        day.classList.toggle('sat', thisDate.getDay() === 6);
+
+        // date 정보를 남기기 위해
+        const dateInfo = document.createElement('div');
+        dateInfo.classList.add('date-info');
+        dateInfo.innerText = thisDate.toDateString();
+        day.appendChild(dateInfo);
+
+        weekBox.appendChild(day);
+        thisDate.setDate(thisDate.getDate() + 1);
+      }
+      dayWrap.appendChild(weekBox);
     }
-
-    days.appendChild(weekBox);
+    days.appendChild(dayWrap);
   }
-  return days;
-}
 
-window.onload = () => {
-  const days = document.querySelector('.days');
-  days.appendChild(renderCalendar(new Date()));
-};
-
-function prevMonth() {
-  const prevMonth = new Date(document.querySelector('.month-year').innerText);
-  prevMonth.setMonth(prevMonth.getMonth() - 1);
-
-  const days = document.querySelector('.days');
-  days.innerHTML = '';
-  days.appendChild(renderCalendar(prevMonth));
-}
-function nextMonth() {
-  const nextMonth = new Date(document.querySelector('.month-year').innerText);
-  nextMonth.setMonth(nextMonth.getMonth() + 1);
-
-  const days = document.querySelector('.days');
-  days.innerHTML = '';
-  days.appendChild(renderCalendar(nextMonth));
-}
+  // 이전 달 달력 렌더링
+  function prevMonth() {
+    const prevMonth = new Date(monthYear.innerText);
+    prevMonth.setMonth(prevMonth.getMonth() - 1);
+    renderCalendar(prevMonth);
+  }
+  // 다음 달 달력 렌더링
+  function nextMonth() {
+    const nextMonth = new Date(monthYear.innerText);
+    nextMonth.setMonth(nextMonth.getMonth() + 1);
+    renderCalendar(nextMonth);
+  }
+  // prev, next 버튼에 이벤트 적용
+  prev.addEventListener('click', prevMonth);
+  next.addEventListener('click', nextMonth);
+})();
