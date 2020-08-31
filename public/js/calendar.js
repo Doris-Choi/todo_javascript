@@ -2,12 +2,17 @@ const calendar = (function func() {
   let pointDate = new Date();
 
   // 엘리먼트 변수 접근
+  const title = document.querySelector('h1');
   const prev = document.querySelector('.prev-month');
   const next = document.querySelector('.next-month');
   const monthYear = document.querySelector('.month-year');
   const days = document.querySelector('.days');
 
   renderCalendar(pointDate);
+  title.addEventListener('click', () => {
+    pointDate = new Date();
+    renderCalendar(pointDate);
+  });
 
   // 달력 렌더링 함수
   function renderCalendar(pointDate) {
@@ -74,7 +79,9 @@ const calendar = (function func() {
       dayWrap.appendChild(weekBox);
     }
     days.appendChild(dayWrap);
-    addChangeDate('.day');
+    addEvent('.day', 'click', (e) => {
+      changeDate(e);
+    });
   }
 
   // 이전 달 달력 렌더링
@@ -99,12 +106,12 @@ const calendar = (function func() {
     pointDate = new Date(target.innerHTML);
     renderCalendar(pointDate);
   };
-  // 지정 날짜 바꾸기 함수 이벤트 적용 함수
-  function addChangeDate(ele) {
+  // 이벤트 추가!
+  function addEvent(ele, event, callbock) {
     const eles = document.querySelectorAll(ele);
     [].forEach.call(eles, (ele) => {
-      ele.addEventListener('click', (e) => {
-        changeDate(e);
+      ele.addEventListener(event, (e) => {
+        callbock(e);
       });
     });
   }
