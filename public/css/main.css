@@ -21,7 +21,10 @@ h1 {
 .header .prev-month {
   width: 30px;
   height: 50px;
-  background: red;
+  background: url('../img/chevron_left.svg');
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
   text-indent: -9999px;
 }
 .header .month-year {
@@ -30,7 +33,10 @@ h1 {
 .header .next-month {
   width: 30px;
   height: 50px;
-  background: red;
+  background: url('../img/chevron_right.svg');
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
   text-indent: -9999px;
 }
 .calendar-wrapper {
@@ -42,7 +48,7 @@ h1 {
   flex: 1;
   margin: 2px;
   padding: 3px;
-  border: 1px solid #ddd;
+  background-color: #eee;
   text-align: center;
 }
 .days {
@@ -51,7 +57,7 @@ h1 {
   flex: 1;
   margin: 2px;
   padding: 5px;
-  border: 1px solid #ddd;
+  background-color: #eee;
 }
 .days .today {
 }
