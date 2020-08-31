@@ -1,0 +1,71 @@
+* {
+  box-sizing: border-box;
+}
+#app {
+}
+h1 {
+  font-size: 30px;
+  text-align: center;
+}
+.wrapper {
+  max-width: 800px;
+  margin: 0 auto;
+}
+.header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-align: center;
+}
+.header .prev-month {
+  width: 30px;
+  height: 50px;
+  background: red;
+  text-indent: -9999px;
+}
+.header .month-year {
+  font-size: 24px;
+}
+.header .next-month {
+  width: 30px;
+  height: 50px;
+  background: red;
+  text-indent: -9999px;
+}
+.calendar-wrapper {
+}
+.week-box {
+  display: flex;
+}
+.week {
+  flex: 1;
+  margin: 2px;
+  padding: 3px;
+  border: 1px solid #ddd;
+  text-align: center;
+}
+.days {
+}
+.days .day {
+  flex: 1;
+  margin: 2px;
+  padding: 5px;
+  border: 1px solid #ddd;
+}
+.days .today {
+}
+.days .point {
+  border: 1px solid rosybrown;
+}
+.days .curr {
+}
+.days .other {
+  opacity: 0.5;
+}
+.sun {
+  color: lightcoral;
+}
+.sat {
+  color: lightseagreen;
+}
