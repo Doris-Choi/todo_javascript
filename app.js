@@ -14,12 +14,14 @@ app.get('/', (req, res) => {
 
 // date
 app
-  .route('/api/date')
+  .route('/todo/:date')
   .get(async (req, res) => {
     const result = { success: true };
+    const date = req.params.date;
     try {
-      const json = await db.getData();
-      result.data = json.date;
+      const data = await db.getData();
+      result.date = date;
+      result.todo = data[date];
     } catch (err) {
       result.success = false;
       result.err = err;
@@ -28,63 +30,22 @@ app
   })
   .post(async (req, res) => {
     const result = { success: true };
-    const date = req.body.date;
+    const date = req.params.date;
+    const newTodo = req.body[date];
     try {
-      const json = await db.getData();
-      json.date = date;
-      await db.setData(json);
-    } catch (err) {
-      result.success = false;
-      result.err = err;
-    }
-    res.json(result);
-  });
-
-// task
-app
-  .route('api/task/:parent')
-  .get(async (req, res) => {
-    const result = { success: true };
-    const parent = req.params.parent;
-    try {
-      const json = await db.getData();
-      list = [];
-      json.task.forEach((task, idx) => {
-        if (task.parent === parent) {
-          task.idx = idx;
-          list.push(task);
-        }
-      });
-      result.data = list;
-    } catch (err) {
-      result.success = false;
-      result.err = err;
-    }
-    res.json(result);
-  })
-  .post(async (req, res) => {
-    const result = { success: true };
-    const task = req.body.task;
-    const parent = req.params.parent;
-    try {
-      const json = await db.getData();
-      task.parent = parent;
-      json.task.push(task);
-      await db.setData(json);
-    } catch (err) {
-      result.success = false;
-      result.err = err;
-    }
-    res.json(result);
-  })
-  .put(async (req, res) => {
-    const result = { success: true };
-    const task = req.body.task;
-    const idx = req.params.parent;
-    try {
-      const json = await db.getData();
-      json.task[idx] = task;
-      await db.setData(json);
+      const data = await db.getData();
+      let point = data[date];
+      if (point) {
+        point.count += 1;
+        point.todos.push(newTodo);
+      } else {
+        point = {
+          count: 1,
+          todos: [newTodo],
+        };
+      }
+      data[date] = point;
+      await db.setData(data);
     } catch (err) {
       result.success = false;
       result.err = err;
