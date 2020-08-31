@@ -1,5 +1,5 @@
 const calendar = (function func() {
-  const pointDate = new Date();
+  let pointDate = new Date();
 
   // 엘리먼트 변수 접근
   const prev = document.querySelector('.prev-month');
@@ -7,12 +7,7 @@ const calendar = (function func() {
   const monthYear = document.querySelector('.month-year');
   const days = document.querySelector('.days');
 
-  window.onload = () => {
-    renderCalendar(pointDate);
-  };
-
-  // 지정 날짜 변경 함수
-  function chagneDate() {}
+  renderCalendar(pointDate);
 
   // 달력 렌더링 함수
   function renderCalendar(pointDate) {
@@ -41,7 +36,7 @@ const calendar = (function func() {
 
     // 달력 구조
     const dayWrap = document.createElement('div');
-    dayWrap.classList.add('cal-wrapper');
+    dayWrap.classList.add('day-wrapper');
 
     const thisDate = new Date(startDate);
     for (let i = 0; i < (endDate - startDate) / 24 / 60 / 60 / 1000 / 7; i++) {
@@ -56,6 +51,10 @@ const calendar = (function func() {
           `${thisDate < startMonth || thisDate > endMonth ? 'other' : 'curr'}`,
         );
         day.classList.toggle(
+          'point',
+          thisDate.toDateString() === pointDate.toDateString(),
+        );
+        day.classList.toggle(
           'today',
           thisDate.toDateString() === new Date().toDateString(),
         );
@@ -66,6 +65,7 @@ const calendar = (function func() {
         const dateInfo = document.createElement('div');
         dateInfo.classList.add('date-info');
         dateInfo.innerText = thisDate.toDateString();
+        dateInfo.style.visibility = 'hidden';
         day.appendChild(dateInfo);
 
         weekBox.appendChild(day);
@@ -74,6 +74,7 @@ const calendar = (function func() {
       dayWrap.appendChild(weekBox);
     }
     days.appendChild(dayWrap);
+    addChangeDate('.day');
   }
 
   // 이전 달 달력 렌더링
@@ -91,4 +92,20 @@ const calendar = (function func() {
   // prev, next 버튼에 이벤트 적용
   prev.addEventListener('click', prevMonth);
   next.addEventListener('click', nextMonth);
+
+  // 지정 날짜 바꾸기 함수
+  const changeDate = (e) => {
+    const target = e.target.children[0];
+    pointDate = new Date(target.innerHTML);
+    renderCalendar(pointDate);
+  };
+  // 지정 날짜 바꾸기 함수 이벤트 적용 함수
+  function addChangeDate(ele) {
+    const eles = document.querySelectorAll(ele);
+    [].forEach.call(eles, (ele) => {
+      ele.addEventListener('click', (e) => {
+        changeDate(e);
+      });
+    });
+  }
 })();
