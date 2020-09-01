@@ -8,29 +8,32 @@ const calendar = (function func() {
   const monthYear = document.querySelector('.month-year');
   const days = document.querySelector('.days');
 
+  // 초기 화면 렌더링
   renderCalendar(pointDate);
+
+  // 이벤트 추가
   title.addEventListener('click', () => {
     pointDate = new Date();
     renderCalendar(pointDate);
   });
+  prev.addEventListener('click', prevMonth);
+  next.addEventListener('click', nextMonth);
 
+  // ----- 함수 ------------------------------
   // 달력 렌더링 함수
-  function renderCalendar(pointDate) {
+  function renderCalendar(point) {
     // days 내용 초기화
     days.innerHTML = '';
 
     // 달력의 월/년이 지정일에 따라 설정되도록
-    monthYear.innerText = `${pointDate
+    monthYear.innerText = `${point
       .toString()
       .substr(4, 3)
-      .toUpperCase()} ${pointDate.getFullYear()}`;
+      .toUpperCase()} ${point.getFullYear()}`;
 
     // 달력에 필요한 변수 선언
-    const startMonth = new Date(pointDate.getFullYear(), pointDate.getMonth());
-    const endMonth = new Date(
-      pointDate.getFullYear(),
-      pointDate.getMonth() + 1,
-    );
+    const startMonth = new Date(point.getFullYear(), point.getMonth());
+    const endMonth = new Date(point.getFullYear(), point.getMonth() + 1);
     endMonth.setDate(endMonth.getDate() - 1);
     const startDate = new Date(
       startMonth.valueOf() - 1000 * 60 * 60 * 24 * startMonth.getDay(),
@@ -80,10 +83,24 @@ const calendar = (function func() {
     }
     days.appendChild(dayWrap);
     addEvent('.day', 'click', (e) => {
-      changeDate(e);
+      pointDate = getDate(e);
+      renderCalendar(pointDate);
     });
   }
-
+  // 이벤트 추가 함수
+  function addEvent(ele, event, callback) {
+    const eles = document.querySelectorAll(ele);
+    [].forEach.call(eles, (ele) => {
+      ele.addEventListener(event, (e) => {
+        callback(e);
+      });
+    });
+  }
+  // 날짜 불러 오기
+  const getDate = (e) => {
+    const target = e.target.children[0];
+    return new Date(target.innerHTML);
+  };
   // 이전 달 달력 렌더링
   function prevMonth() {
     const prevMonth = new Date(monthYear.innerText);
@@ -96,23 +113,29 @@ const calendar = (function func() {
     nextMonth.setMonth(nextMonth.getMonth() + 1);
     renderCalendar(nextMonth);
   }
-  // prev, next 버튼에 이벤트 적용
-  prev.addEventListener('click', prevMonth);
-  next.addEventListener('click', nextMonth);
 
-  // 지정 날짜 바꾸기 함수
-  const changeDate = (e) => {
-    const target = e.target.children[0];
-    pointDate = new Date(target.innerHTML);
-    renderCalendar(pointDate);
-  };
-  // 이벤트 추가!
-  function addEvent(ele, event, callbock) {
-    const eles = document.querySelectorAll(ele);
-    [].forEach.call(eles, (ele) => {
-      ele.addEventListener(event, (e) => {
-        callbock(e);
-      });
-    });
+  // ----- AJAX ------------------------------
+  async function getTodo(url) {
+    const res = await fetch(url);
+    const result = await res.json();
+    if (!result.success) throw result.err;
+    console.log(result);
+    return result;
   }
+  async function postTodo(url, data) {
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8',
+      },
+      body: JSON.stringify(data),
+    });
+    const result = await res.json();
+    if (!result.success) throw result.err;
+    return result.data;
+  }
+  postTodo('/todo/200901', {
+    200901: { id: 0, name: 'FETCH 적용하기', done: false },
+  });
+  getTodo('/todo/200901');
 })();
