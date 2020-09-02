@@ -1,3 +1,5 @@
+const isTodo = [];
+
 const calendar = (function func() {
   let pointDate = new Date();
 
@@ -170,13 +172,16 @@ const calendar = (function func() {
 
     exitTodo.addEventListener('click', (e) => {
       todo.style.display = 'none';
-      // 여기에 POST함수 넣기
+      const { url, data } = makePostData(e);
+      postTodo(`/todo/${url}`, data);
     });
     if (result.todo) {
       const { count, todos } = result.todo;
       countDoing.innerText = `할 일 ${count}개 중 ${
         todos.filter((ele) => !ele.done).length
       }개 남음`;
+    } else {
+      countDoing.innerText = '할 일 0개 중 0개 남음';
     }
     return todoHead;
   }
@@ -263,6 +268,7 @@ const calendar = (function func() {
         );
         e.target.value = '';
         e.target.focus();
+        return;
       }
     });
     btnAdd.addEventListener('click', (e) => {
@@ -281,5 +287,25 @@ const calendar = (function func() {
     todoAdd.appendChild(btnAdd);
     return todoAdd;
   }
-  function makePostData() {}
+  function makePostData(e) {
+    let [yy, mm, dd] = e.target.nextElementSibling.innerText
+      .split(' ')
+      .map((ele) => parseInt(ele));
+    mm = mm > 9 ? mm : '0' + mm;
+    dd = dd > 9 ? dd : '0' + dd;
+    const thisData = {};
+    const todoBody = document.querySelector('.todo-body');
+    thisData.count = todoBody.children.length;
+    let i = 0;
+    thisData.todos = [].map.call(todoBody.children, (ele) => {
+      return {
+        id: i++,
+        name: ele.children[1].innerText,
+        done: ele.children[0].classList.contains('done'),
+      };
+    });
+    const data = {};
+    data[yy + mm + dd] = thisData;
+    return { url: `${yy}/${mm}/${dd}`, data };
+  }
 })();

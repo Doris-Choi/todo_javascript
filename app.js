@@ -12,7 +12,7 @@ app.get('/', (req, res) => {
   res.render('index');
 });
 
-// date
+// for TODO PAGE ROUTING
 app
   .route('/todo/:yyyy/:mm/:dd')
   .get(async (req, res) => {
@@ -38,18 +38,13 @@ app
     const newTodo = req.body[yyyy + mm + dd];
     try {
       const data = await db.getData();
-      let point = data[yyyy + mm + dd];
-      if (point) {
-        point.count += 1;
-        point.todos.push(newTodo);
-      } else {
-        point = {
-          count: 1,
-          todos: [newTodo],
-        };
+      if (newTodo.count !== 0) {
+        data[yyyy + mm + dd] = newTodo;
+        await db.setData(data);
+      } else if (data[yyyy + mm + dd]) {
+        delete data[yyyy + mm + dd];
+        await db.setData(data);
       }
-      data[yyyy + mm + dd] = point;
-      await db.setData(data);
     } catch (err) {
       result.success = false;
       result.err = err;
