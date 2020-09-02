@@ -250,10 +250,31 @@ const calendar = (function func() {
     todoInput.placeholder = '할 일을 입력하세요!';
     btnAdd.innerText = '할 일 추가';
 
+    todoInput.addEventListener('keyup', (e) => {
+      if (e.keyCode === 13) {
+        if (e.target.value.length === 0) {
+          alert('내용을 입력하세요!');
+          e.target.focus();
+          return;
+        }
+        const todoBody = document.querySelector('.todo-body');
+        todoBody.appendChild(
+          makeTodoBox({ name: e.target.value, done: false }),
+        );
+        e.target.value = '';
+        e.target.focus();
+      }
+    });
     btnAdd.addEventListener('click', (e) => {
+      if (todoInput.value.length === 0) {
+        alert('내용을 입력하세요!');
+        todoInput.focus();
+        return;
+      }
       const todoBody = document.querySelector('.todo-body');
       todoBody.appendChild(makeTodoBox({ name: todoInput.value, done: false }));
       todoInput.value = '';
+      todoInput.focus();
     });
 
     todoAdd.appendChild(todoInput);
