@@ -2,12 +2,15 @@
   box-sizing: border-box;
 }
 #app {
+  padding: 20px;
 }
 h1 {
-  font-size: 30px;
+  margin: 20px;
+  font-size: 1.75rem;
   text-align: center;
   cursor: pointer;
 }
+/* CALENDAR */
 .wrapper {
   max-width: 800px;
   margin: 0 auto;
@@ -30,7 +33,7 @@ h1 {
   text-indent: -9999px;
 }
 .header .month-year {
-  font-size: 24px;
+  font-size: 1.25rem;
 }
 .header .next-month {
   width: 30px;
@@ -78,4 +81,94 @@ h1 {
 }
 .sat {
   color: lightseagreen;
+}
+/* TODO */
+#todo {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.2);
+}
+#todo .todo-wrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 30px 20px;
+  background: #fff;
+  border-radius: 20px;
+}
+#todo .todo-head {
+  position: relative;
+}
+#todo .todo-head .exit-todo {
+  position: absolute;
+  top: -15px;
+  right: -5px;
+  width: 20px;
+  height: 20px;
+  background: red;
+  cursor: pointer;
+}
+#todo .todo-head h2 {
+  margin: 0;
+  width: 250px;
+  font-size: 1.4rem;
+}
+#todo .todo-head div:last-child {
+  margin: 1rem 0;
+  color: gray;
+  font-size: 0.8rem;
+}
+#todo .todo-body {
+  height: 280px;
+  background: lightgray;
+  overflow: scroll;
+}
+#todo .todo-body .todo-box {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+}
+#todo .todo-body .todo-box .todo-check {
+  width: 20px;
+  height: 20px;
+  margin-right: 7px;
+  border: 1px solid black;
+  border-radius: 50%;
+}
+#todo .todo-body .todo-box .todo-content {
+  flex: 1;
+  padding-top: 2px;
+}
+#todo .todo-body .todo-box .todo-delete {
+  width: 20px;
+  height: 20px;
+  margin-left: 10px;
+  background: black;
+}
+#todo .todo-add {
+  display: flex;
+  align-items: center;
+  padding-top: 1rem;
+}
+#todo .todo-add input {
+  flex: 1;
+  display: block;
+  height: 1.75rem;
+  margin-right: 10px;
+  border: 1px solid blue;
+  border-radius: 3px;
+}
+#todo .todo-add input::placeholder {
+  color: #ccc;
+}
+#todo .todo-add button {
+  width: 35px;
+  height: 35px;
+  text-indent: -9999px;
 }

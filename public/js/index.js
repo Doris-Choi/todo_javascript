@@ -9,7 +9,9 @@ const calendar = (function func() {
   const days = document.querySelector('.days');
   const todo = document.getElementById('todo');
   todo.style.display = 'none';
-
+  // todo.addEventListener('click', () => {
+  //   todo.style.display = 'none';
+  // });
   // 초기 화면 렌더링
   renderCalendar(pointDate);
 
@@ -190,6 +192,7 @@ const calendar = (function func() {
   }
   function renderTodoBody(todo) {
     const todoBody = document.createElement('div');
+    todoBody.classList.add('todo-body');
     if (!todo) return todoBody;
     const { count, todos } = todo;
 
@@ -231,7 +234,9 @@ const calendar = (function func() {
     const todoAdd = document.createElement('div');
     const todoInput = document.createElement('input');
     const btnAdd = document.createElement('button');
+    todoAdd.classList.add('todo-add');
     todoInput.placeholder = '할 일을 입력하세요!';
+    btnAdd.innerText = '할 일 추가';
 
     btnAdd.addEventListener('click', (e) => {
       console.log(todoInput.value);
