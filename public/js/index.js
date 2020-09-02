@@ -12,10 +12,9 @@ const calendar = (function func() {
   // todo.addEventListener('click', () => {
   //   todo.style.display = 'none';
   // });
+
   // 초기 화면 렌더링
   renderCalendar(pointDate);
-
-  // 이벤트 추가
   title.addEventListener('click', () => {
     pointDate = new Date();
     renderCalendar(pointDate);
@@ -47,8 +46,7 @@ const calendar = (function func() {
     );
 
     // 달력 구조
-    const dayWrap = document.createElement('div');
-    dayWrap.classList.add('day-wrapper');
+    const dayWrap = document.createDocumentFragment();
 
     const thisDate = new Date(startDate);
     for (let i = 0; i < (endDate - startDate) / 24 / 60 / 60 / 1000 / 7; i++) {
@@ -92,11 +90,10 @@ const calendar = (function func() {
     });
     addEvent('.day', 'dblclick', (e) => {
       const d = getDate(e);
-      getTodo(
-        `/todo/${d.getFullYear()}/${
-          d.getMonth() + 1 > 9 ? d.getMonth() + 1 : '0' + (d.getMonth() + 1)
-        }/${d.getDate() > 9 ? d.getDate() : '0' + d.getDate()}`,
-      );
+      const url = `/todo/${d.getFullYear()}/${
+        d.getMonth() + 1 > 9 ? d.getMonth() + 1 : '0' + (d.getMonth() + 1)
+      }/${d.getDate() > 9 ? d.getDate() : '0' + d.getDate()}`;
+      getTodo(url);
     });
   }
   // 이벤트 추가 함수
@@ -128,8 +125,7 @@ const calendar = (function func() {
 
   // ----- AJAX ------------------------------
   async function getTodo(url) {
-    const res = await fetch(url);
-    const result = await res.json();
+    const result = await fetch(url).then((res) => res.json());
     if (!result.success) throw result.err;
     renderTodo(result);
     return result;
@@ -146,20 +142,15 @@ const calendar = (function func() {
     if (!result.success) throw result.err;
     return result.data;
   }
-  // postTodo('/todo/200901', {
-  //   200901: { id: 0, name: 'FETCH 적용하기', done: false },
-  // });
-  // getTodo('/todo/200901');
-
-  // ----- TODO Render
+  //TODO page 구조
   function renderTodo(result) {
     todo.innerHTML = '';
 
     const todoWrap = document.createElement('div');
     todoWrap.classList.add('todo-wrapper');
     todoWrap.appendChild(renderTodoHead(result));
-    todoWrap.appendChild(renderTodoBody(result.todo));
-    todoWrap.appendChild(renderTodoAdd());
+    todoWrap.appendChild(renderTodoBody(result));
+    todoWrap.appendChild(renderTodoAdd(result));
 
     todo.appendChild(todoWrap);
     todo.style.display = 'block';
@@ -179,58 +170,57 @@ const calendar = (function func() {
 
     exitTodo.addEventListener('click', (e) => {
       todo.style.display = 'none';
+      // 여기에 POST함수 넣기
     });
-    const todoData = result.todo || null;
-    console.log(todoData);
-    if (todoData) {
-      const { count, todos } = todoData;
+    if (result.todo) {
+      const { count, todos } = result.todo;
       countDoing.innerText = `할 일 ${count}개 중 ${
         todos.filter((ele) => !ele.done).length
       }개 남음`;
     }
     return todoHead;
   }
-  function renderTodoBody(todo) {
+  function renderTodoBody(result) {
     const todoBody = document.createElement('div');
     todoBody.classList.add('todo-body');
-    if (!todo) return todoBody;
-    const { count, todos } = todo;
-
-    for (let i = 0; i < count; i++) {
-      const todoBox = document.createElement('div');
-      const todoCheck = document.createElement('div');
-      const todoContent = document.createElement('div');
-      const todoDelete = document.createElement('div');
-      todoBox.classList.add('todo-box');
-      todoCheck.classList.add('todo-check');
-      todoContent.classList.add('todo-content');
-      todoDelete.classList.add('todo-delete');
-
-      if (todos[i].done) {
-        todoCheck.classList.add('done');
-        todoContent.classList.add('done');
-      }
-      todoCheck.addEventListener('click', (e) => {
-        todoCheck.classList.toggle('done');
-        todoContent.classList.toggle('done');
-        console.log(todoCheck);
-        console.log(todoContent);
-      });
-      todoContent.innerText = todos[i].name;
-      todoDelete.addEventListener('click', (e) => {
-        if (confirm('정말로 지우시겠습니까?')) {
-          console.log(todos[i].id);
-        }
-      });
-
-      todoBox.appendChild(todoCheck);
-      todoBox.appendChild(todoContent);
-      todoBox.appendChild(todoDelete);
-      todoBody.appendChild(todoBox);
+    if (result.todo) {
+      result.todo.todos.forEach((obj) =>
+        todoBody.appendChild(makeTodoBox(obj)),
+      );
     }
     return todoBody;
   }
-  function renderTodoAdd() {
+  function makeTodoBox(obj) {
+    const todoBox = document.createElement('div');
+    const todoCheck = document.createElement('div');
+    const todoContent = document.createElement('div');
+    const todoDelete = document.createElement('div');
+    todoBox.classList.add('todo-box');
+    todoCheck.classList.add('todo-check');
+    todoContent.classList.add('todo-content');
+    todoDelete.classList.add('todo-delete');
+    if (obj.done) {
+      todoCheck.classList.add('done');
+      todoContent.classList.add('done');
+    }
+
+    todoCheck.addEventListener('click', (e) => {
+      todoCheck.classList.toggle('done');
+      todoContent.classList.toggle('done');
+    });
+    todoContent.innerText = obj.name;
+    todoDelete.addEventListener('click', (e) => {
+      if (confirm('정말로 지우시겠습니까?')) {
+        const removeEle = e.target.parentNode;
+        removeEle.parentNode.removeChild(removeEle);
+      }
+    });
+    todoBox.appendChild(todoCheck);
+    todoBox.appendChild(todoContent);
+    todoBox.appendChild(todoDelete);
+    return todoBox;
+  }
+  function renderTodoAdd(result) {
     const todoAdd = document.createElement('div');
     const todoInput = document.createElement('input');
     const btnAdd = document.createElement('button');
@@ -239,7 +229,9 @@ const calendar = (function func() {
     btnAdd.innerText = '할 일 추가';
 
     btnAdd.addEventListener('click', (e) => {
-      console.log(todoInput.value);
+      const todoBody = document.querySelector('.todo-body');
+      todoBody.appendChild(makeTodoBox({ name: todoInput.value, done: false }));
+      todoInput.value = '';
     });
 
     todoAdd.appendChild(todoInput);
