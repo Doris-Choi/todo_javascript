@@ -1,4 +1,16 @@
+/* VARIABLES */
+:root {
+  --color-red: #d58568;
+  --color-dark-green2: #30402f;
+  --color-dark-green1: #577160;
+  --color-green: #90b19f;
+  --color-light-green1: #bcd0b3;
+  --color-light-green2: #f2f5e0;
+  --color-light-green3: #d7e7bf60;
+}
+
 * {
+  color: var(--color-dark-green2);
   box-sizing: border-box;
 }
 #app {
@@ -6,6 +18,7 @@
 }
 h1 {
   margin: 20px;
+  color: var(--color-dark-green1);
   font-size: 1.75rem;
   text-align: center;
   cursor: pointer;
@@ -54,7 +67,7 @@ h1 {
   flex: 1;
   margin: 2px;
   padding: 4px 0 0;
-  background-color: #eee;
+  background-color: var(--color-light-green2);
   text-align: center;
 }
 .days {
@@ -63,7 +76,8 @@ h1 {
   flex: 1;
   margin: 2px;
   padding: 5px;
-  background-color: #eee;
+  padding-bottom: 1.5rem;
+  background-color: var(--color-light-green2);
   cursor: pointer;
 }
 .days .today {
@@ -77,10 +91,10 @@ h1 {
   opacity: 0.5;
 }
 .sun {
-  color: lightcoral;
+  color: var(--color-red);
 }
 .sat {
-  color: lightseagreen;
+  color: var(--color-green);
 }
 /* TODO */
 #todo {
@@ -109,9 +123,12 @@ h1 {
   position: absolute;
   top: -15px;
   right: -5px;
-  width: 20px;
-  height: 20px;
-  background: red;
+  width: 30px;
+  height: 30px;
+  background: url('../img/x.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
   cursor: pointer;
 }
 #todo .todo-head h2 {
@@ -121,12 +138,12 @@ h1 {
 }
 #todo .todo-head .count-doing {
   margin: 1rem 0;
-  color: gray;
+  color: #bbb;
   font-size: 0.8rem;
 }
 #todo .todo-body {
   height: 280px;
-  background: lightgray;
+  background: var(--color-light-green3);
   overflow: scroll;
 }
 #todo .todo-body .todo-box {
@@ -140,37 +157,51 @@ h1 {
   margin-right: 7px;
   border: 1px solid black;
   border-radius: 50%;
+  cursor: pointer;
 }
 #todo .todo-body .todo-box .todo-check.done {
-  border: 1px solid pink;
+  background: url('../img/check.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  border: 1px solid var(--color-green);
 }
 #todo .todo-body .todo-box .todo-content {
   flex: 1;
-  padding-top: 2px;
+  padding-top: 4px;
+  line-height: 1.5;
 }
 #todo .todo-body .todo-box .todo-content.done {
-  color: #aaa;
+  color: var(--color-green);
   text-decoration: line-through;
-  text-decoration-color: #aaa;
+  text-decoration-color: var(--color-green);
 }
 #todo .todo-body .todo-box .todo-delete {
   width: 20px;
   height: 20px;
   margin-left: 10px;
-  background: black;
+  background: url('../img/trash.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  cursor: pointer;
 }
 #todo .todo-add {
   display: flex;
   align-items: center;
-  padding-top: 1rem;
+  padding-top: 0.6rem;
 }
 #todo .todo-add input {
   flex: 1;
   display: block;
   height: 1.75rem;
   margin-right: 10px;
-  border: 1px solid blue;
+  border: 1px solid var(--color-light-green1);
   border-radius: 3px;
+}
+#todo .todo-add input:focus {
+  border: 2px solid var(--color-green);
+  outline: none;
 }
 #todo .todo-add input::placeholder {
   color: #ccc;
@@ -178,5 +209,17 @@ h1 {
 #todo .todo-add button {
   width: 35px;
   height: 35px;
+  background: url('../img/plus.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  border: 1px solid var(--color-dark-green1);
+  border-radius: 50%;
+  color: var(--color-light-green1);
   text-indent: -9999px;
+  cursor: pointer;
+}
+#todo .todo-add button:active {
+  outline: none;
+  border: 1px solid var(--color-light-green1);
 }

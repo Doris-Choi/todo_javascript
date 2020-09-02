@@ -77,7 +77,7 @@ const calendar = (function func() {
         const dateInfo = document.createElement('div');
         dateInfo.classList.add('date-info');
         dateInfo.innerText = thisDate.toDateString();
-        dateInfo.style.visibility = 'hidden';
+        dateInfo.style.display = 'none';
         day.appendChild(dateInfo);
 
         weekBox.appendChild(day);
