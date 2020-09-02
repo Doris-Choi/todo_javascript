@@ -131,18 +131,17 @@ const calendar = (function func() {
     return result;
   }
   async function postTodo(url, data) {
-    const res = await fetch(url, {
+    const result = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json;charset=utf-8',
       },
       body: JSON.stringify(data),
-    });
-    const result = await res.json();
+    }).then((res) => res.json());
     if (!result.success) throw result.err;
     return result.data;
   }
-  //TODO page 구조
+  // TODO page 구조
   function renderTodo(result) {
     todo.innerHTML = '';
 
@@ -163,6 +162,7 @@ const calendar = (function func() {
     const countDoing = document.createElement('div');
     todoHead.classList.add('todo-head');
     exitTodo.classList.add('exit-todo');
+    countDoing.classList.add('count-doing');
     todoDate.innerText = `${yy}년 ${parseInt(mm)}월 ${parseInt(dd)}일`;
     todoHead.appendChild(exitTodo);
     todoHead.appendChild(todoDate);
@@ -207,10 +207,32 @@ const calendar = (function func() {
     todoCheck.addEventListener('click', (e) => {
       todoCheck.classList.toggle('done');
       todoContent.classList.toggle('done');
+      const countDoing = document.querySelector('.count-doing');
+      const splitText = countDoing.innerText.split(' ');
+      let doing = parseInt(splitText[4]);
+      if (todoCheck.classList.contains('done')) {
+        doing--;
+      } else {
+        doing++;
+      }
+      splitText[4] = doing + '개';
+      countDoing.innerText = splitText.join(' ');
     });
     todoContent.innerText = obj.name;
     todoDelete.addEventListener('click', (e) => {
       if (confirm('정말로 지우시겠습니까?')) {
+        const countDoing = document.querySelector('.count-doing');
+        const splitText = countDoing.innerText.split(' ');
+        let cnts = parseInt(splitText[2]);
+        let doing = parseInt(splitText[4]);
+        cnts--;
+        splitText[2] = cnts + '개';
+        if (!e.target.parentElement.firstChild.classList.contains('done')) {
+          doing--;
+          splitText[4] = doing + '개';
+        }
+        countDoing.innerText = splitText.join(' ');
+
         const removeEle = e.target.parentNode;
         removeEle.parentNode.removeChild(removeEle);
       }
@@ -238,4 +260,5 @@ const calendar = (function func() {
     todoAdd.appendChild(btnAdd);
     return todoAdd;
   }
+  function makePostData() {}
 })();
