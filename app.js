@@ -14,14 +14,16 @@ app.get('/', (req, res) => {
 
 // date
 app
-  .route('/todo/:date')
+  .route('/todo/:yyyy/:mm/:dd')
   .get(async (req, res) => {
     const result = { success: true };
-    const date = req.params.date;
+    const yyyy = req.params.yyyy;
+    const mm = req.params.mm;
+    const dd = req.params.dd;
     try {
       const data = await db.getData();
-      result.date = date;
-      result.todo = data[date];
+      result.date = req.url.substr(6);
+      result.todo = data[yyyy + mm + dd];
     } catch (err) {
       result.success = false;
       result.err = err;
@@ -30,11 +32,13 @@ app
   })
   .post(async (req, res) => {
     const result = { success: true };
-    const date = req.params.date;
-    const newTodo = req.body[date];
+    const yyyy = req.params.yyyy;
+    const mm = req.params.mm;
+    const dd = req.params.dd;
+    const newTodo = req.body[yyyy + mm + dd];
     try {
       const data = await db.getData();
-      let point = data[date];
+      let point = data[yyyy + mm + dd];
       if (point) {
         point.count += 1;
         point.todos.push(newTodo);
@@ -44,7 +48,7 @@ app
           todos: [newTodo],
         };
       }
-      data[date] = point;
+      data[yyyy + mm + dd] = point;
       await db.setData(data);
     } catch (err) {
       result.success = false;
